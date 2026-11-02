@@ -1,51 +1,84 @@
 <?php declare(strict_types=1); ?>
 <!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?= escape($title) ?></title>
-<meta name="description" content="<?= escape($description) ?>">
-<meta name="robots" content="<?= $found ? 'index, follow, max-image-preview:large' : 'noindex, follow' ?>">
-<?php if ($found): ?><link rel="canonical" href="https://gdforge.com.br<?= escape($path === '/' ? '/' : $path) ?>"><?php endif; ?>
-<meta property="og:type" content="website">
-<meta property="og:locale" content="pt_BR">
-<meta property="og:site_name" content="GDForge">
-<meta property="og:title" content="<?= escape($title) ?>">
-<meta property="og:description" content="<?= escape($description) ?>">
-<?php if ($found): ?><meta property="og:url" content="https://gdforge.com.br<?= escape($path) ?>"><?php endif; ?>
-<meta name="twitter:card" content="summary">
-<link rel="icon" href="/assets/forge.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/site.css">
-<script src="/assets/site.js" defer></script>
-</head>
+<?php render('components/head', compact('title', 'description', 'found', 'path', 'canonicalPath', 'article')); ?>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
-<header class="header"><a class="brand" href="/" aria-label="GDForge — início"><img src="/assets/forge.svg" width="34" height="40" alt="">GD<span>FORGE</span><span class="brand-dot">®</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" hidden>Menu</button><nav id="navigation" aria-label="Principal"><ul><?php foreach (['/sobre' => 'A forja', '/projetos' => 'Protótipos', '/devlog' => 'Devlog', '/contato' => 'Contato'] as $url => $name): ?><li><a href="<?= $url ?>" <?= $path === $url ? 'aria-current="page"' : '' ?>><?= $name ?></a></li><?php endforeach; ?></ul></nav><span class="header-note">INDEPENDENTE. EXPERIMENTAL.</span></header>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="custom-cursor" id="cursor" aria-hidden="true"></div>
+<?php render('components/header', ['path' => $path]); ?>
 <main id="conteudo">
 <?php if (!$found): ?>
-<section class="container page-intro"><p class="eyebrow">ERRO 404</p><h1>Essa trilha ainda<br>não foi <em>forjada.</em></h1><p>Não encontramos a página que você procura.</p><a class="button" href="/">Voltar ao início ↗</a></section>
+<section class="container standalone"><h1 class="section-title">Página não <span class="highlight">encontrada</span></h1><div class="about-box"><p>O endereço solicitado não foi encontrado.</p><a class="btn" href="/">Voltar ao início</a></div></section>
+<?php elseif ($article !== null): ?>
+<?php render('components/article', compact('article', 'categories', 'related')); ?>
+<?php elseif ($path === '/gameplay-studio'): ?>
+<?php render('components/gameplay-studio', compact('productInfo')); ?>
 <?php elseif ($project !== null): ?>
-<section class="container page-intro"><a class="text-link" href="/projetos">← Todos os protótipos</a><p class="eyebrow"><?= escape($project['genre']) ?></p><h1><?= escape($project['name']) ?></h1><p><?= escape($project['description']) ?></p><a class="button" href="<?= escape($project['url']) ?>">Conhecer no itch.io ↗</a><p class="small">Você será direcionado à página do jogo no itch.io.</p></section>
+<?php render('components/project-detail', ['project' => $project]); ?>
 <?php else: ?>
-<?php if ($path === '/'): ?>
-<section class="hero container" id="home"><div class="hero-copy"><p class="eyebrow"><span class="status"></span> LABORATÓRIO INDEPENDENTE DE JOGOS</p><h1>Boas ideias.<br>Muito teste.<br><em>Game feel.</em></h1><p class="hero-description">Aqui, cada mecânica passa pela forja. Um laboratório de jogos indie, protótipos e novas formas de jogar.</p><div class="actions"><a class="button" href="#projetos">Explorar protótipos <span>↗</span></a><a class="text-link" href="/sobre">Conheça a forja →</a></div><p class="hero-caption">FORGING GAMES & TECHNIQUES <span>— GD FORGE</span></p></div><div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><span class="art-coordinate">EXPERIMENT / 001</span><img src="/assets/forge.svg" width="260" height="310" alt=""><span class="art-label">IDEIA → MECÂNICA → EXPERIÊNCIA</span></div></section>
-<div class="ticker" aria-label="Áreas de interesse"><span>GAME DESIGN</span><span>✳</span><span>ARCADE & ROGUELITES</span><span>✳</span><span>METROIDVANIA</span><span>✳</span><span>TOWER DEFENSE</span></div>
-<?php endif; ?>
-<?php if ($path === '/' || $path === '/projetos'): ?>
-<section class="container section" id="projetos"><div class="section-heading"><div><p class="eyebrow">01 / EXPERIMENTOS JOGÁVEIS</p><<?= $path === '/' ? 'h2' : 'h1' ?>>Protótipos <em>forjados.</em></<?= $path === '/' ? 'h2' : 'h1' ?>></div><p>Mecânicas em primeiro lugar.<br>Descubra o que saiu do laboratório.</p></div><div class="projects"><?php foreach ($projects as $item): ?><article class="project"><a class="project-art art-<?= escape($item['slug']) ?>" href="/projetos/<?= escape($item['slug']) ?>" aria-label="Conhecer <?= escape($item['name']) ?>"><span class="project-index">EXPERIMENTO / <?= $item['symbol'] ?></span><span class="game-visual" aria-hidden="true"></span><span class="project-art-title"><?= escape($item['name']) ?></span><span class="art-note">ESTUDO VISUAL · GD FORGE</span></a><div class="project-meta"><span><?= escape($item['genre']) ?></span><span>↗</span></div><h3><a href="/projetos/<?= escape($item['slug']) ?>"><?= escape($item['name']) ?></a></h3><p><?= escape($item['description']) ?></p></article><?php endforeach; ?></div></section>
+<?php if ($path === '/contato'): ?><section class="container standalone"><h1 class="section-title">Siga a <span class="highlight">Forja</span></h1><div class="about-box"><p>Acompanhe os protótipos e os bastidores do desenvolvimento nas redes sociais abaixo.</p></div></section><?php endif; ?>
+    <!-- Hero Section -->
+    <?php if ($path === '/'): ?>
+<section class="hero" id="home">
+        <img src="/assets/images/gd-forge-logo-1.png" alt="Símbolo GDForge" class="hero-logo gs-reveal" fetchpriority="high" decoding="async" width="346" height="328">
+        <h1 class="gs-reveal">GD<span class="highlight">Forge</span></h1>
+        <p class="hero-tagline gs-reveal">Forging Games &amp; Techniques</p>
+        <a href="#projetos" class="btn hover-target gs-reveal mt-4">Forjar Aventura <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2c1 6-5 7-3 12 2-1 3-3 3-5 6 4 9 8 6 12-2 3-9 4-12 0-4-5 0-9 3-13-1 4 0 6 1 7C8 8 13 8 12 2Z"/></svg></a>
+    </section>
+
 <?php endif; ?>
 <?php if ($path === '/' || $path === '/sobre'): ?>
-<section class="container section about" id="sobre"><div><p class="eyebrow">02 / SOBRE A FORJA</p><<?= $path === '/' ? 'h2' : 'h1' ?>>A diversão está<br>nos <em>detalhes.</em></<?= $path === '/' ? 'h2' : 'h1' ?>></div><div><p class="lead">Dev solo. Game designer apaixonado. Sempre aprendendo.</p><p>A GDForge é meu laboratório de criação. Meu foco é experimentar, martelar o código e encontrar controles fluidos, mecânicas envolventes e aquela sensação boa de jogar.</p><p>Exploro gêneros clássicos com uma pegada moderna: arcade, roguelites, metroidvania e tower defense.</p><span class="outline-label">DA IDEIA AO PRÓXIMO PROTÓTIPO</span></div></section>
+    <!-- About Section -->
+    <section class="container <?= $path !== '/' ? 'standalone' : '' ?>" id="sobre">
+        <<?= $path === '/' ? 'h2' : 'h1' ?> class="section-title gs-up">Laboratório de <span class="highlight">Criação</span></<?= $path === '/' ? 'h2' : 'h1' ?>>
+        <div class="about-box gs-up">
+            <p>Olá! Eu sou um Dev Solo e aspirante a programador, mas acima de tudo, um <strong>Game Designer apaixonado.</strong></p>
+            <p>A GD Forge é o meu laboratório. Aqui, meu foco não é criar a arte mais bonita, mas sim "martelar" o código até encontrar mecânicas viciantes, controles fluidos e aquela sensação boa de jogar (<strong>Game Feel</strong>).</p>
+            <p><strong>Gosto de explorar gêneros clássicos com uma pegada moderna:</strong></p>
+            <p>🕹️ Arcade & Roguelites<br>🗺️ Metroidvania<br>🏰 Tower Defense</p>
+        </div>
+    </section>
+
 <?php endif; ?>
-<?php if ($path === '/' || $path === '/devlog'): ?>
-<section class="container section page-intro" id="devlog"><p class="eyebrow">03 / DIÁRIO DO LABORATÓRIO</p><<?= $path === '/' ? 'h2' : 'h1' ?>>Por dentro<br>da <em>forja.</em></<?= $path === '/' ? 'h2' : 'h1' ?>><p>Controles, mecânicas e game feel são os temas que orientam os estudos da GDForge.</p><div class="empty-state"><h2>Os próximos registros começam aqui.</h2><p>Ainda não há artigos publicados neste projeto. Enquanto isso, explore os protótipos e acompanhe os bastidores nas redes sociais.</p><a class="text-link" href="/projetos">Explorar protótipos →</a></div></section>
+<?php if ($path === '/' || $path === '/projetos'): ?>
+    <!-- Prototypes Section -->
+    <section class="container <?= $path !== '/' ? 'standalone' : '' ?>" id="projetos">
+        <<?= $path === '/' ? 'h2' : 'h1' ?> class="section-title gs-up">Protótipos <span class="highlight">Forjados</span></<?= $path === '/' ? 'h2' : 'h1' ?>>
+        <div class="games-grid">
+            <?php foreach ($projects as $cardProject): ?>
+                <?php render('components/project-card', ['project' => $cardProject, 'headingLevel' => $path === '/' ? 3 : 2]); ?>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
 <?php endif; ?>
-<?php if ($path === '/' || $path === '/contato'): ?>
-<section class="container section contact" id="contato"><p class="eyebrow"><?= $path === '/' ? '03' : '04' ?> / SIGA A FORJA</p><<?= $path === '/' ? 'h2' : 'h1' ?>>A próxima ideia<br>já está <em>no fogo.</em></<?= $path === '/' ? 'h2' : 'h1' ?>><p>Acompanhe os experimentos e os bastidores do desenvolvimento.</p><div class="actions"><a class="button" href="https://www.instagram.com/gdforge_oficial/">Instagram ↗</a><a class="text-link" href="https://www.tiktok.com/@gdforge">TikTok ↗</a></div></section>
+<?php if ($path === '/'): ?>
+<section class="container tools-preview" id="ferramentas"><h2 class="section-title">Ferramentas na <span class="highlight">forja</span></h2><div class="about-box"><span class="badge">Visão de produto</span><h3>GDForge Gameplay Studio</h3><p>Menos código. Mais gameplay. Conheça a proposta de ferramentas e Smart Recipes para explorar a criação de mecânicas em Godot.</p><a class="btn" href="/gameplay-studio">Conhecer a proposta</a></div></section>
+<?php endif; ?>
+<?php if ($path === '/' || $isListing): ?>
+    <!-- Devlog / Gallery Section -->
+    <section class="container gallery-section <?= $path !== '/' ? 'standalone' : '' ?>" id="devlog">
+        <<?= $path === '/' ? 'h2' : 'h1' ?> class="section-title gs-up"><?php if ($category !== null): ?><?= escape($categories[$category]) ?> <span class="highlight">/ Devlog</span><?php else: ?>Diário do <span class="highlight">Desenvolvedor</span><?php endif; ?></<?= $path === '/' ? 'h2' : 'h1' ?>>
+        <?php if ($isListing): ?>
+        <?php render('components/post-list', compact('listing', 'categories', 'category', 'path', 'pageNumber')); ?>
+        <h2 class="section-title gallery-heading">Bastidores <span class="highlight">visuais</span></h2>
+        <?php else: ?>
+        <p class="section-lead"><a class="text-link" href="/devlog">Explorar artigos e bastidores →</a></p>
+        <?php if ($posts !== []): ?><div class="home-posts"><?php foreach (array_slice($posts, 0, 3) as $post): ?><article><p class="post-meta"><?= escape($categories[$post['category']]) ?></p><h3><a class="text-link" href="/devlog/<?= escape($post['slug']) ?>"><?= escape($post['title']) ?></a></h3><p><?= escape($post['excerpt']) ?></p></article><?php endforeach; ?></div><?php endif; ?>
+        <?php endif; ?>
+        <div class="gallery-grid">
+            <div class="gallery-item hover-target gs-up"><img src="/assets/images/insta-1.jpg" alt="Registro de desenvolvimento de Space Shooter — imagem 1" loading="lazy" decoding="async" width="505" height="839"><div class="gallery-overlay"><span><span aria-hidden="true">〈/〉</span> SPACE SHOOTER</span></div></div>
+            <div class="gallery-item hover-target gs-up"><img src="/assets/images/insta-2.jpg" alt="Registro de desenvolvimento de Space Shooter — imagem 2" loading="lazy" decoding="async" width="503" height="840"><div class="gallery-overlay"><span><span aria-hidden="true">〈/〉</span> SPACE SHOOTER</span></div></div>
+            <div class="gallery-item hover-target gs-up"><img src="/assets/images/insta-3.jpg" alt="Registro de desenvolvimento do Jogo do Pássaro" loading="lazy" decoding="async" width="505" height="841"><div class="gallery-overlay"><span><span aria-hidden="true">〈/〉</span> JOGO DO PÁSSARO</span></div></div>
+            <div class="gallery-item hover-target gs-up"><img src="/assets/images/insta-4.jpg" alt="Registro de desenvolvimento de Space Shooter — imagem 4" loading="lazy" decoding="async" width="509" height="838"><div class="gallery-overlay"><span><span aria-hidden="true">〈/〉</span> SPACE SHOOTER</span></div></div>
+        </div>
+    </section>
+
 <?php endif; ?>
 <?php endif; ?>
 </main>
-<footer class="container footer"><a class="brand" href="/">GD<span>FORGE</span></a><p>© <?= date('Y') ?> GDForge · Forging Games & Techniques.</p><a href="https://www.ariceliomoura.com.br" rel="external">Desenvolvido por Aricelio Moura ↗</a></footer>
+<?php render('components/footer', []); ?>
+
 </body>
 </html>

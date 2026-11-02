@@ -10,3 +10,9 @@
 - Trabalhar somente no escopo solicitado; nunca publicar ou alterar produção automaticamente.
 - Enviar alterações ao repositório remoto (git push) somente com autorização explícita do usuário para aquele envio. A autorização do primeiro envio não autoriza atualizações futuras.
 - Manter o runtime local em .runtime fora do versionamento.
+
+## Referência de interface
+
+- O html.txt fornecido pelo usuário é a base visual e de interação para todas as páginas futuras: fundo escuro quadriculado, Orbitron/Poppins locais, degradê laranja-amarelo, cabeçalho fixo, abertura centralizada, cartões e galeria.
+- Reutilizar os tokens e componentes de public/assets/site.css; não substituir esta identidade por outro layout sem pedido do usuário.
+- Manter navegação por seções na página inicial e URLs amigáveis individuais. Preservar acessibilidade e recursos locais ao adaptar a referência.

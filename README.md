@@ -1,6 +1,6 @@
 # GDForge-Site
 
-Implementação local em PHP 8.3+ sem framework, WordPress ou dependências de terceiros. Não houve publicação nem alteração em produção.
+Implementação local em PHP 8.3+ sem framework, WordPress ou bibliotecas de execução de terceiros; fontes locais licenciadas. Não houve publicação nem alteração em produção.
 
 ## Executar
 
@@ -18,13 +18,15 @@ Em Apache, configure DocumentRoot para a pasta public, habilite mod_rewrite e pe
 - src/projects.php: catálogo dos três protótipos fornecidos.
 - src/view.php: renderização e escape de saída.
 - templates/page.php: HTML semântico renderizado no servidor.
-- public/assets: CSS, JavaScript e símbolo SVG autoral criado para esta implementação.
+- public/assets: CSS, JavaScript, imagens da referência e fontes locais com licenças.
 
-URLs: /, /sobre, /projetos, /devlog, /contato e /projetos/{slug}. Endereços desconhecidos retornam 404; parâmetros não selecionam arquivos ou templates. As âncoras originais /#home, /#sobre, /#projetos , /#devlog e /#contato continuam disponíveis. O devlog informa a ausência de publicações; a galeria remota não foi importada.
+URLs: /, /sobre, /projetos, /gameplay-studio, /devlog, /devlog/categoria/{slug}, /devlog/{slug}, /contato e /projetos/{slug}. Artigos em rascunho retornam 404; /jogos redireciona para /projetos. Endereços desconhecidos retornam 404; parâmetros não selecionam arquivos ou templates. As âncoras originais /#home, /#sobre, /#projetos , /#devlog e /#contato continuam disponíveis. O DevLog exibe a galeria de quatro registros da referência.
 
 ## Conteúdo e recursos
 
-Texto e links foram adaptados do html.txt fornecido. Não foram importados comentários ou scripts como instruções do projeto. Fontes do sistema e ilustrações próprias evitam CDNs e dependências. As capas são estudos visuais identificados, não capturas dos jogos. Logo e imagens originais não foram copiados porque não foram fornecidos localmente com confirmação de licença; substituir por arquivos autorizados quando disponíveis. Não foram inventados artigos, avaliações ou resultados.
+O HTML fornecido é a referência de IU/UX para este projeto e para as próximas páginas. Foram restaurados composição, textos, imagens e links originais, incluindo cartões que abrem o itch.io em nova aba. As páginas individuais dos projetos continuam disponíveis.
+
+Imagens foram obtidas do domínio GDForge indicado na referência e verificadas como PNG/JPEG; sua reutilização se limita a este projeto do usuário. Fontes Orbitron e Poppins foram obtidas do repositório oficial google/fonts, com licenças OFL incluídas. Consulte ASSETS.md para origem e hashes. Nenhum recurso é carregado por CDN. Animações usam CSS e IntersectionObserver, sem GSAP. Ícones SVG são locais e não exigem FontAwesome. Cursor decorativo não esconde o cursor do sistema; seleção de texto e atalhos permanecem disponíveis.
 
 ## SEO e acessibilidade
 
@@ -54,3 +56,21 @@ Há um PHP portátil local em `.runtime/php/php.exe`, ignorado pelo Git. Para ex
 Repositório: https://github.com/Werisngton-GD/GDForge-Site.git
 
 Novos envios ao remoto exigem autorização explícita do usuário para cada envio. Alterações locais não autorizam automaticamente `git push` nem publicação em produção.
+
+## Validação da interface de referência
+
+Abertura e galeria conferidas no navegador em desktop e em 390 × 844 px. Fontes e todas as imagens carregaram; não houve rolagem horizontal. Menu móvel testado por clique, navegação para DevLog e fechamento por Escape. URLs e recursos novos responderam 200; URL inexistente retornou 404. Não houve envio ao remoto nesta atualização.
+
+## Planejamento da evolução
+
+O [Plano Mestre adaptado](docs/PLANO_MESTRE.md) orienta as próximas entregas mantendo a identidade da Home. Consulte o [inventário local](docs/INVENTARIO_CONTEUDO.md) e as [decisões de adaptação](docs/DECISOES.md). O plano distingue recursos existentes, propostas e informações ainda não verificadas; não autoriza push nem deploy.
+
+## Componentes compartilhados
+
+Os cartões e detalhes dos jogos usam o catálogo único em src/projects.php. Cabeçalho, rodapé, metadados, cartões, detalhes e ícones estão em templates/components. Consulte docs/PROGRESSO.md para as etapas implementadas e verificações.
+
+## Devlog e conteúdo
+
+O catálogo de artigos em content/posts alimenta listagens, categorias, páginas de leitura, Home, sitemap.xml e llms.txt. Sitemap e llms agora são respostas dinâmicas do PHP. Leia docs/EDITORIAL.md para criar conteúdo, validar e gerar prévias isoladas. O primeiro artigo foi aprovado e integrado ao site local com status published; aparece na Home, no Devlog, na categoria e no sitemap. Nenhum push ou deploy foi realizado. A landing do Gameplay Studio apresenta uma visão de produto, sem anunciar funcionalidades disponíveis.
+
+Teste editorial: & '.\.runtime\php\php.exe' tests/content.php (26 verificações).
