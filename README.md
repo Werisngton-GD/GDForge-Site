@@ -61,16 +61,15 @@ Novos envios ao remoto exigem autorização explícita do usuário para cada env
 
 Abertura e galeria conferidas no navegador em desktop e em 390 × 844 px. Fontes e todas as imagens carregaram; não houve rolagem horizontal. Menu móvel testado por clique, navegação para DevLog e fechamento por Escape. URLs e recursos novos responderam 200; URL inexistente retornou 404. Não houve envio ao remoto nesta atualização.
 
-## Planejamento da evolução
-
-O [Plano Mestre adaptado](docs/PLANO_MESTRE.md) orienta as próximas entregas mantendo a identidade da Home. Consulte o [inventário local](docs/INVENTARIO_CONTEUDO.md) e as [decisões de adaptação](docs/DECISOES.md). O plano distingue recursos existentes, propostas e informações ainda não verificadas; não autoriza push nem deploy.
-
 ## Componentes compartilhados
 
-Os cartões e detalhes dos jogos usam o catálogo único em src/projects.php. Cabeçalho, rodapé, metadados, cartões, detalhes e ícones estão em templates/components. Consulte docs/PROGRESSO.md para as etapas implementadas e verificações.
+Os cartões e detalhes dos jogos usam o catálogo único em `src/projects.php`. Cabeçalho, rodapé, metadados, cartões, detalhes e ícones estão em `templates/components`.
 
 ## Devlog e conteúdo
 
-O catálogo de artigos em content/posts alimenta listagens, categorias, páginas de leitura, Home, sitemap.xml e llms.txt. Sitemap e llms agora são respostas dinâmicas do PHP. Leia docs/EDITORIAL.md para criar conteúdo, validar e gerar prévias isoladas. O primeiro artigo foi aprovado e integrado ao site local com status published; aparece na Home, no Devlog, na categoria e no sitemap. Nenhum push ou deploy foi realizado. A landing do Gameplay Studio apresenta uma visão de produto, sem anunciar funcionalidades disponíveis.
+O catálogo de artigos em `content/posts` alimenta listagens, categorias, páginas de leitura, Home, sitemap.xml e llms.txt. O sitemap e o llms são respostas dinâmicas do PHP. A landing do Gameplay Studio apresenta uma visão de produto, sem anunciar funcionalidades disponíveis.
 
-Teste editorial: & '.\.runtime\php\php.exe' tests/content.php (26 verificações).
+## Hospedagem (Hostinger / Apache / Nginx)
+
+- **DocumentRoot em `public` (Recomendado):** Se a hospedagem permitir configurar a pasta pública (ex: `public_html/public`), o servidor responderá diretamente a partir de `public/index.php` e `public/.htaccess`.
+- **DocumentRoot na raiz:** Se o repositório for clonado diretamente na raiz do domínio (`public_html`), os arquivos `.htaccess` e `index.php` da raiz encaminham todas as requisições de forma limpa para `public/` e bloqueiam o acesso direto a pastas internas (`src`, `templates`, `content`).

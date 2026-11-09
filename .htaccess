@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 1. Bloqueia acesso direto a pastas internas e arquivos sensíveis
+    RewriteRule ^(content|src|templates)(\/|$) - [F,L]
+    RewriteRule ^(\.git|\.env) - [F,L]
+
+    # 2. Se o usuário tentar acessar com /public/ na URL, redireciona 301 para a URL limpa
+    RewriteCond %{THE_REQUEST} \s/public/([^\s?]*) [NC]
+    RewriteRule ^public/(.*)$ /$1 [R=301,L]
+
+    # 3. Se o arquivo físico existir dentro de public/ (CSS, JS, imagens, fontes), entrega diretamente
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # 4. Caso contrário, reescreve todas as rotas limpas para o front-controller public/index.php
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/index.php [QSA,L]
+</IfModule>
+
+# Fallback se mod_rewrite não estiver disponível
+DirectoryIndex index.php public/index.php
